@@ -32,6 +32,22 @@
 
 using namespace proctor;
 
+#ifndef OPEN_TREE_CLONE
+#define OPEN_TREE_CLONE 1
+#endif
+#ifndef OPEN_TREE_CLOEXEC
+#define OPEN_TREE_CLOEXEC O_CLOEXEC
+#endif
+#ifndef MOVE_MOUNT_F_EMPTY_PATH
+#define MOVE_MOUNT_F_EMPTY_PATH 0x00000004
+#endif
+#ifndef SYS_open_tree
+#define SYS_open_tree 428
+#endif
+#ifndef SYS_move_mount
+#define SYS_move_mount 429
+#endif
+
 namespace {
 
 inline void ignore(int) {}
@@ -127,6 +143,13 @@ bool write_small(const std::string& path, const std::string& s) {
 
 bool setup_fs(const std::string& hostname, const std::vector<Bind>& binds, std::string* err) {
   if (mount(nullptr, "/", nullptr, MS_REC | MS_PRIVATE, nullptr) != 0) { *err = "make-private"; return false; }
+  // Detached clones of the requested bind sources, taken before /tmp is hidden below.
+  std::vector<int> bind_fds;
+  for (const auto& b : binds) {
+    int fd = (int)syscall(SYS_open_tree, AT_FDCWD, b.src.c_str(), OPEN_TREE_CLONE | OPEN_TREE_CLOEXEC);
+    if (fd < 0) { *err = "open_tree " + b.src + ": " + strerror(errno); return false; }
+    bind_fds.push_back(fd);
+  }
   // Scratch tmpfs over /tmp (hides host /tmp, leaves nothing behind on the host).
   if (mount("tmpfs", "/tmp", "tmpfs", MS_NOSUID | MS_NODEV, "size=8m,mode=0700") != 0) {
     *err = std::string("mount /tmp: ") + strerror(errno);
@@ -191,12 +214,17 @@ bool setup_fs(const std::string& hostname, const std::vector<Bind>& binds, std::
     return false;
   }
 
-  for (const auto& b : binds) {
+  for (size_t i = 0; i < binds.size(); i++) {
+    const auto& b = binds[i];
     if (b.dst.rfind("/mnt/", 0) != 0 && b.dst.rfind("/run/", 0) != 0) { *err = "bind dst must be under /mnt or /run"; return false; }
     if (b.dst.find("..") != std::string::npos) { *err = "bad bind dst"; return false; }
     std::string dst = nr + b.dst;
     if (!mkdir_p(dst)) { *err = "mkdir " + dst; return false; }
-    if (mount(b.src.c_str(), dst.c_str(), nullptr, MS_BIND, nullptr) != 0) { *err = "bind " + b.src + ": " + strerror(errno); return false; }
+    if (syscall(SYS_move_mount, bind_fds[i], "", AT_FDCWD, dst.c_str(), MOVE_MOUNT_F_EMPTY_PATH) != 0) {
+      *err = "move_mount " + b.dst + ": " + strerror(errno);
+      return false;
+    }
+    close(bind_fds[i]);
     unsigned long fl = MS_BIND | MS_REMOUNT | MS_NOSUID | MS_NODEV | MS_NOEXEC | (b.ro ? MS_RDONLY : 0);
     if (mount(nullptr, dst.c_str(), nullptr, fl | (preserved_flags(b.src.c_str()) & ~MS_NOEXEC), nullptr) != 0) { *err = "remount bind " + b.dst + ": " + strerror(errno); return false; }
   }

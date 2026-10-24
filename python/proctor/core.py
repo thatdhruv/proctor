@@ -67,6 +67,7 @@ class Sandbox:
         self.acquire_ms: float = info["acquire_ms"]
         self.info = info
         self._released = False
+        self._snapshotted = False  # a custom snapshot makes the sandbox unfit for recycling
 
     def exec(self, argv: Iterable[str], *, stdin: str = "", timeout_ms: int = 10_000,
              env: dict[str, str] | None = None, cwd: str = "/workspace",
@@ -89,6 +90,7 @@ class Sandbox:
 
     def snapshot(self) -> None:
         self._c.call("snapshot", sandbox_id=self.id)
+        self._snapshotted = True
 
     def restore(self) -> float:
         return self._c.call("restore", sandbox_id=self.id)["restore_ms"]
@@ -100,7 +102,7 @@ class Sandbox:
         if self._released:
             return False
         self._released = True
-        return self._c.call("release", sandbox_id=self.id, reuse=reuse)["recycled"]
+        return self._c.call("release", sandbox_id=self.id, reuse=reuse and not self._snapshotted)["recycled"]
 
     def __enter__(self) -> "Sandbox":
         return self
