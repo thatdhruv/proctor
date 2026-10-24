@@ -30,6 +30,7 @@ struct Bind {
 struct SandboxConfig {
   Limits limits;
   std::vector<Bind> binds;
+  bool seccomp = true;         // debug only: disabling it is used to test the other layers in isolation
   std::string hostname = "proctor";
   std::string init_path;       // path to the proctor-init binary
   std::string cgroup_base;     // "" = autodetect; "none" = disable cgroups

@@ -170,11 +170,11 @@ class CodingEnv(ProctorEnv):
                 r = g.exec(["/usr/bin/python3", "/workspace/.grader/run.py"], timeout_ms=20_000)
                 detail = {"mode": "inproc", "exit_code": r.exit_code, "timed_out": r.timed_out}
                 if p.require_summary:
-                    m = None
-                    for m in SUMMARY.finditer(r.stdout):
-                        pass
-                    ok = bool(m and int(m.group(1)) == int(m.group(2)) == len(cases))
-                    detail["summary"] = m.group(0) if m else None
+                    # "does the output say all N tests passed?" - the usual grep-style check
+                    hits = [m.group(0) for m in SUMMARY.finditer(r.stdout)
+                            if int(m.group(1)) == int(m.group(2)) == len(cases)]
+                    ok = bool(hits)
+                    detail["summary"] = hits[0] if hits else None
                 else:
                     ok = r.exit_code == 0 and not r.timed_out
         finally:

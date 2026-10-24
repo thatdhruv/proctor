@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+from proctor.agents.reference import sql_query
 from proctor.core import CoreError, Daemon, find_build_dir
 from proctor.envs.sql import SqlEnv, admin_dsn
 from proctor.policy import VerifierPolicy
@@ -25,7 +26,7 @@ def daemon():
 
 
 def ref_unqualified(task):
-    return task.ref.replace("{s}.", "")
+    return sql_query(task.id)
 
 
 @pytest.mark.parametrize("pol", ["naive", "hardened"])

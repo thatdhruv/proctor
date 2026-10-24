@@ -164,18 +164,19 @@ std::unique_ptr<Sandbox> Sandbox::create(const SandboxConfig& cfg_in, std::strin
                 {"hostname", cfg.hostname},
                 {"limits", cfg.limits},
                 {"binds", cfg.binds},
+                {"seccomp", cfg.seccomp},
                 {"degraded", !sb->stats_.cgroup}};
   if (!send_frame(sb->ctl_fd_, hello)) return fail("send setup failed");
   json ready;
   int nfd = -1;
   if (!recv_frame(sb->ctl_fd_, &ready, &nfd)) return fail("sandbox did not become ready (init died?)");
   if (!ready.value("ok", false)) return fail("sandbox setup failed: " + ready.value("error", std::string("?")));
-  if (nfd < 0) return fail("no seccomp notification fd received");
+  if (cfg.seccomp && nfd < 0) return fail("no seccomp notification fd received");
   sb->notif_fd_ = nfd;
   tv = {0, 0};
   setsockopt(sb->ctl_fd_, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv);
 
-  sb->sup_ = std::thread(&Sandbox::supervise, sb.get());
+  if (nfd >= 0) sb->sup_ = std::thread(&Sandbox::supervise, sb.get());
   sb->stats_.spawn_ms = mono_ms() - t0;
   return sb;
 }

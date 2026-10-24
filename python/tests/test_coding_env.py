@@ -1,8 +1,6 @@
-import inspect
-import textwrap
-
 import pytest
 
+from proctor.agents.reference import coding_source
 from proctor.core import CoreError, Daemon, find_build_dir
 from proctor.envs.coding import CodingEnv
 from proctor.policy import VerifierPolicy
@@ -26,14 +24,7 @@ def daemon():
 POLICIES = {"naive": VerifierPolicy.naive(), "hardened": VerifierPolicy.hardened()}
 
 
-def reference_source(task) -> str:
-    helpers = {"merge_intervals": [], "is_balanced": [], "top_k_frequent": [],
-               "roman_to_int": ["_R"], "rle_decode": [], "longest_common_prefix": []}
-    out = ""
-    for h in helpers[task.id]:
-        out += f"{h} = {getattr(ct, h)!r}\n"
-    out += inspect.getsource(task.ref)
-    return out
+reference_source = coding_source
 
 
 @pytest.mark.parametrize("policy_name", POLICIES)
@@ -42,7 +33,7 @@ def test_honest_solution_always_rewarded(daemon, policy_name, task_id):
     """Hardening must never punish a real solution."""
     env = CodingEnv(daemon.client, POLICIES[policy_name], compute_oracle=True)
     env.reset(seed=3, options={"task_id": task_id})
-    env.step({"type": "write_file", "path": "/workspace/solution.py", "content": reference_source(ct.TASKS[task_id])})
+    env.step({"type": "write_file", "path": "/workspace/solution.py", "content": reference_source(task_id)})
     _, reward, term, _, info = env.step({"type": "submit"})
     env.close()
     assert term and reward == 1.0, info

@@ -205,7 +205,8 @@ class SqlEnv(ProctorEnv):
             a.execute(pgsql.SQL("CREATE TABLE {}.grader_expected (task_id text PRIMARY KEY, rows jsonb)").format(S))
             a.execute(pgsql.SQL("INSERT INTO {}.grader_expected VALUES (%s, %s)").format(S),
                       (task_id, Jsonb([[jsonable(v) for v in r] for r in self._expected_rows])))
-            a.execute(pgsql.SQL("GRANT SELECT ON {}.grader_expected TO {}").format(S, R))
+            a.execute(pgsql.SQL("GRANT {} ON {}.grader_expected TO {}")
+                      .format(pgsql.SQL("SELECT" if p.readonly_agent_role else "ALL"), S, R))
         base = admin_dsn().rpartition("/")
         dsn = base[0].split("@")[-1]
         self.agent_conn = psycopg.connect(

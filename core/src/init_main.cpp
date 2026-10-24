@@ -561,8 +561,8 @@ int main(int argc, char** argv) {
     struct rlimit core = {0, 0};
     setrlimit(RLIMIT_CORE, &core);
     drop_all_caps();
-    nfd = install_seccomp_filter();
-    if (nfd < 0) { ok = false; err = std::string("seccomp: ") + strerror(errno); }
+    if (setup.value("seccomp", true)) nfd = install_seccomp_filter();
+    if (setup.value("seccomp", true) && nfd < 0) { ok = false; err = std::string("seccomp: ") + strerror(errno); }
   }
   if (!ok) {
     send_frame(ctl, {{"ok", false}, {"error", err}});
@@ -578,7 +578,7 @@ int main(int argc, char** argv) {
   std::string serr;
   do_snapshot(&serr); // baseline: empty workspace
   if (!send_frame(ctl, {{"ok", true}}, nfd)) return 5;
-  close(nfd);
+  if (nfd >= 0) close(nfd);
 
   json q;
   while (recv_frame(ctl, &q)) {

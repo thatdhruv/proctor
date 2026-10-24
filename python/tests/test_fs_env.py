@@ -1,5 +1,6 @@
 import pytest
 
+from proctor.agents.reference import FS_SOLUTIONS
 from proctor.core import CoreError, Daemon, find_build_dir
 from proctor.envs.fsops import FsOpsEnv
 from proctor.policy import VerifierPolicy
@@ -13,28 +14,7 @@ except CoreError:
 
 pytestmark = pytest.mark.skipif(not HAVE_CORE, reason="C++ core not built")
 
-DEDUPE_PY = """
-import hashlib, os
-g = {}
-for dp, _, fs in os.walk('data'):
-    for f in fs:
-        p = os.path.join(dp, f)
-        g.setdefault(hashlib.sha256(open(p, 'rb').read()).hexdigest(), []).append(p)
-d = []
-for v in g.values():
-    d += sorted(v)[1:]
-for p in d:
-    os.remove(p)
-open('dedupe_report.txt', 'w').write(chr(10).join(sorted(d)) + chr(10))
-"""
-
-SOLUTIONS = {
-    "archive_2023_logs": "mkdir -p archive/2023 && mv logs/app-2023-* archive/2023/",
-    "dedupe": "python3 - <<'PY'\n" + DEDUPE_PY + "PY",
-    "fix_perms": "chmod 755 bin/*.sh; chmod 644 bin/*.txt conf/*",
-    "clear_cache": "find scratch -name '*.tmp' -delete",
-    "manifest": "cd data && find . -type f ! -name MANIFEST.sha256 | sed 's|^./||' | sort | xargs sha256sum > MANIFEST.sha256",
-}
+SOLUTIONS = FS_SOLUTIONS
 
 
 @pytest.fixture(scope="module")

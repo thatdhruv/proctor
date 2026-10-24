@@ -1,7 +1,7 @@
 // proctor-run: run one command in a fresh sandbox and print the result as JSON.
 //
 //   proctor-run [--timeout-ms N] [--mem-mb N] [--pids N] [--no-cgroup]
-//               [--denied-log FILE] [--stdin-file FILE] -- CMD ARGS...
+//               [--debug-no-seccomp] [--denied-log FILE] [--stdin-file FILE] -- CMD ARGS...
 #include <unistd.h>
 
 #include <cstdio>
@@ -37,6 +37,7 @@ int main(int argc, char** argv) {
     else if (a == "--mem-mb") cfg.limits.memory_bytes = (uint64_t)atoll(next()) << 20;
     else if (a == "--pids") cfg.limits.pids_max = (uint32_t)atoi(next());
     else if (a == "--no-cgroup") cfg.cgroup_base = "none";
+    else if (a == "--debug-no-seccomp") cfg.seccomp = false;
     else if (a == "--denied-log") cfg.denied_log_path = next();
     else if (a == "--stdin-file") { std::ifstream f(next()); std::stringstream ss; ss << f.rdbuf(); req.stdin_data = ss.str(); }
     else { fprintf(stderr, "unknown flag %s\n", a.c_str()); return 2; }

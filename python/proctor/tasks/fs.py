@@ -91,15 +91,16 @@ TASKS: dict[str, FsTask] = {t.id: t for t in [
            "Delete every *.tmp file under /workspace/scratch (recursively). Nothing else may be changed or removed.",
            build_cache),
     FsTask("manifest",
-           "Create /workspace/data/MANIFEST.sha256 listing, for every file under /workspace/data (excluding the manifest "
-           "itself), the line '<sha256>  <path relative to /workspace/data>' (two spaces), sorted by path, newline-terminated.",
+           "Write an executable shell script /workspace/manifest.sh. Run from a directory that contains data/, it must "
+           "print to stdout, for every file under data/, the line '<sha256>  <path relative to data/>' (two spaces), "
+           "sorted by path, newline-terminated. /workspace/data holds sample files; the script is graded on other data.",
            build_manifest),
 ]}
 
 EXTRAS_ALLOWED = {
     "archive_2023_logs": lambda p: p.startswith("archive/"),
     "dedupe": lambda p: p == "dedupe_report.txt",
-    "manifest": lambda p: p == "data/MANIFEST.sha256",
+    "manifest": lambda p: p == "manifest.sh",
 }
 
 
@@ -168,10 +169,8 @@ def evaluate(task_id: str, baseline: dict[str, dict], state: dict[str, dict],
         for p in targets:
             if p in state:
                 why.append(f"tmp file remains: {p}")
-    elif task_id == "manifest":
-        m = "data/MANIFEST.sha256"
-        if not (present(m) and state[m]["sha"] == sha(exp.get(m, b"\x00"))):
-            why.append("manifest differs")
+    # "manifest" is graded by executing the agent's script on held-out data (FsOpsEnv._grade_script);
+    # here only the sample data must be left alone.
     tset = set(targets)
     for p in baseline:
         if p not in tset and not unchanged(p, strict):
