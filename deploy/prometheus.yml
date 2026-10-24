@@ -1,0 +1,6 @@
+global: { scrape_interval: 2s, evaluation_interval: 5s }
+scrape_configs:
+  - job_name: otel-collector
+    static_configs: [{ targets: ["otel-collector:8889"] }]
+  - job_name: proctord          # the C++ core's own metrics (sandbox startup, denied syscalls, pool)
+    static_configs: [{ targets: ["proctor:9464"] }]

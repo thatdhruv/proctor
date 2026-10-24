@@ -1,0 +1,14 @@
+{
+  "workers": 8,
+  "seconds": 71.16348075866699,
+  "oracle": false,
+  "cgroup": true,
+  "episodes": 921,
+  "steps": 4211,
+  "solved": 921,
+  "episodes_fsops": 243,
+  "episodes_coding": 527,
+  "episodes_sql": 151,
+  "steps_per_sec": 59.173609203863215,
+  "episodes_per_sec": 12.942031364701501
+}

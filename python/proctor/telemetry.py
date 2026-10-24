@@ -28,6 +28,7 @@ def init(service_name: str = "proctor", endpoint: str | None = None, export_inte
         from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
         from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
         from opentelemetry.sdk.metrics import MeterProvider
+        from opentelemetry.sdk.metrics.view import ExplicitBucketHistogramAggregation, View
         from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
         from opentelemetry.sdk.trace import TracerProvider
         from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -38,7 +39,11 @@ def init(service_name: str = "proctor", endpoint: str | None = None, export_inte
         reader = PeriodicExportingMetricReader(
             OTLPMetricExporter(endpoint=endpoint.rstrip("/") + "/v1/metrics"),
             export_interval_millis=export_interval_ms)
-        mp = MeterProvider(resource=res, metric_readers=[reader])
+        # OTel default buckets are 0..10000 in raw units; ours are seconds, so give them sub-ms resolution.
+        secs = [0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
+        views = [View(instrument_name=n, aggregation=ExplicitBucketHistogramAggregation(secs))
+                 for n in ("proctor_step_duration", "proctor_env_reset_duration")]
+        mp = MeterProvider(resource=res, metric_readers=[reader], views=views)
         metrics.set_meter_provider(mp)
     _tracer = trace.get_tracer("proctor")
     _meter = metrics.get_meter("proctor")
@@ -57,13 +62,31 @@ def init(service_name: str = "proctor", endpoint: str | None = None, export_inte
 
 
 @contextlib.contextmanager
-def span(name: str, **attrs) -> Iterator[None]:
+def span(name: str, parent=None, **attrs) -> Iterator[None]:
     if _tracer is None:
         yield
         return
-    with _tracer.start_as_current_span(name, attributes={k: v for k, v in attrs.items() if v is not None}) as s:
+    with _tracer.start_as_current_span(name, context=parent,
+                                       attributes={k: v for k, v in attrs.items() if v is not None}):
         yield
-        _ = s
+
+
+def start_span(name: str, **attrs):
+    """Open a long-lived span (e.g. one per episode). Returns (span, context) to pass as `parent=`."""
+    if _tracer is None:
+        return None, None
+    from opentelemetry import trace
+    s = _tracer.start_span(name, attributes={k: v for k, v in attrs.items() if v is not None})
+    return s, trace.set_span_in_context(s)
+
+
+def end_span(s, **attrs) -> None:
+    if s is None:
+        return
+    for k, v in attrs.items():
+        if v is not None:
+            s.set_attribute(k, v)
+    s.end()
 
 
 def add_event(name: str, **attrs) -> None:

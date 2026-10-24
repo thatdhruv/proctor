@@ -50,6 +50,8 @@ class ProctorEnv:
         self.seed = 0
         self._steps = 0
         self._done = True
+        self._ep_span = None
+        self._ep_ctx = None
         self.last_grade: Grade | None = None
         self.last_oracle: bool | None = None
 
@@ -84,7 +86,9 @@ class ProctorEnv:
         self.seed = int(seed if seed is not None else time.time_ns() % 1_000_000)
         ids = self.task_ids()
         self.task_id = options.get("task_id") or ids[self.seed % len(ids)]
-        with telemetry.span("env.reset", env=self.name, task=self.task_id), telemetry.Timer() as tm:
+        self._ep_span, self._ep_ctx = telemetry.start_span("env.episode", env=self.name, task=self.task_id,
+                                                           agent=self.agent_name, round=self.round_no)
+        with telemetry.span("env.reset", parent=self._ep_ctx, env=self.name, task=self.task_id), telemetry.Timer() as tm:
             self.sb = self.core.acquire()
             prompt = self._start(self.task_id, self.seed)
             telemetry.set_attrs(sandbox_source=self.sb.source, acquire_ms=self.sb.acquire_ms)
@@ -106,7 +110,8 @@ class ProctorEnv:
         atype = str(action.get("type", ""))
         t0 = time.perf_counter()
         denied_before = len(self.sb.denied())
-        with telemetry.span("env.step", env=self.name, task=self.task_id, action=atype, step=self._steps):
+        with telemetry.span("env.step", parent=self._ep_ctx, env=self.name, task=self.task_id, action=atype,
+                            step=self._steps):
             if atype == "submit":
                 obs = {**self._submit(action), "message": "submitted"}
             elif atype in self.action_types:
@@ -140,7 +145,7 @@ class ProctorEnv:
         return obs, reward, terminated, truncated, info
 
     def _finish(self, info: dict) -> float:
-        with telemetry.span("env.grade", env=self.name, task=self.task_id):
+        with telemetry.span("env.grade", parent=self._ep_ctx, env=self.name, task=self.task_id):
             self.last_grade = self._grade()
         reward = self.last_grade.reward
         info["verifier"] = self.last_grade.detail
@@ -148,7 +153,7 @@ class ProctorEnv:
         self.episode.reward = reward
         self.episode.reward_detail = self.last_grade.detail
         if self.compute_oracle:
-            with telemetry.span("env.oracle", env=self.name, task=self.task_id):
+            with telemetry.span("env.oracle", parent=self._ep_ctx, env=self.name, task=self.task_id):
                 self.last_oracle, odetail = self._oracle()
             self.episode.oracle_solved = self.last_oracle
             self.episode.oracle_detail = odetail
@@ -164,6 +169,9 @@ class ProctorEnv:
             for e in self.sb.denied():
                 ep.blocked.append({**e, "sandbox": self.sb.id})
         self.store.write_episode(ep)
+        telemetry.end_span(self._ep_span, reward=ep.reward, oracle_solved=ep.oracle_solved, cheated=ep.cheated,
+                           episode_id=ep.id)
+        self._ep_span = None
 
     def close(self) -> None:
         if self.sb is not None:
@@ -176,6 +184,8 @@ class ProctorEnv:
                     pass
                 self.sb = None
         self._done = True
+        telemetry.end_span(self._ep_span)  # episode abandoned before it finished
+        self._ep_span = None
 
     # --------------------------------------------------- shared sandbox actions
     def _sandbox_action(self, action: dict) -> dict:

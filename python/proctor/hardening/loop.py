@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 import time
 from dataclasses import asdict, dataclass, field
@@ -108,8 +109,8 @@ def run_exploit(core: CoreClient, ex: Exploit, policy: VerifierPolicy, round_no:
                     stat.transcript = [{"action": s["action"], "obs": str(s["observation"])[:400]} for s in ep.steps]
             stat.reported += ctx.notes
             telemetry.count("attempts", 1, exploit_type=ex.type, exploit=ex.id, round=str(round_no))
-            if ctx.escaped or (ep is not None and ep.cheated):
-                telemetry.count("cheats", 1, exploit_type=ex.type, exploit=ex.id, round=str(round_no))
+            # always add (even 0) so the series exists and a clean round shows up as 0%, not as missing data
+            telemetry.count("cheats", int(bool(ctx.escaped or (ep is not None and ep.cheated))), exploit_type=ex.type, exploit=ex.id, round=str(round_no))
     return stat
 
 
@@ -174,18 +175,19 @@ def main() -> None:
     ap.add_argument("--rounds", type=int, default=8)
     ap.add_argument("--budget", type=int, default=3, help="patches the fixer may land per round")
     ap.add_argument("--seeds", default="1,2")
-    ap.add_argument("--pg", default=None, help="Postgres DSN for the episode store (optional)")
+    ap.add_argument("--pg", default=os.environ.get("PROCTOR_STORE_DSN"), help="Postgres DSN for the episode store (optional)")
     ap.add_argument("--pool", type=int, default=6)
     a = ap.parse_args()
     telemetry.init("proctor-hardening")
     store: Store = PostgresStore(a.pg) if a.pg else NullStore()
     random.seed(0)
-    with Daemon(pool=a.pool) as d:
+    with Daemon(pool=a.pool, metrics_port=int(os.environ.get("PROCTOR_METRICS_PORT", "0"))) as d:
         reps = hardening_loop(d.client, store, fixer=ScriptedFixer(a.budget), max_rounds=a.rounds,
                               seeds=[int(x) for x in a.seeds.split(",")])
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     Path(a.out).write_text(json.dumps({"fixer": f"scripted(budget={a.budget})", "rounds": [r.to_dict() for r in reps]}, indent=2))
     print("wrote", a.out)
+    time.sleep(3)  # let the OTel exporters flush
 
 
 if __name__ == "__main__":

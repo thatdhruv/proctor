@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import threading
 import uuid
 from dataclasses import dataclass, field
 from typing import Any, Protocol
@@ -103,8 +104,13 @@ class PostgresStore:
         import psycopg
         self.conn = psycopg.connect(dsn, autocommit=True)
         self.conn.execute(SCHEMA)
+        self._lock = threading.Lock()  # one connection shared by rollout worker threads
 
     def write_episode(self, ep: EpisodeRecord) -> None:
+        with self._lock:
+            self._write(ep)
+
+    def _write(self, ep: EpisodeRecord) -> None:
         from psycopg.types.json import Jsonb
         with self.conn.transaction():
             self.conn.execute(
