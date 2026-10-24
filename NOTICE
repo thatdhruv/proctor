@@ -1,0 +1,16 @@
+Proctor
+Copyright 2026 the Proctor authors. Licensed under the Apache License, Version 2.0.
+
+Third-party software and credits
+--------------------------------
+
+EnvHarness (optional integration)
+  https://github.com/google-research/envharness
+  Copyright 2026 Google LLC / The EnvHarness Authors. Apache License 2.0.
+  Proctor ships an *adapter* (python/proctor/integrations/envharness_adapter.py) that exposes Proctor
+  environments through EnvHarness's ActionableEnv interface so EnvHarness layers (for example `Setup`)
+  can wrap them. No EnvHarness source is copied into this repository, and Proctor does not reimplement
+  EnvHarness's harness-search ("EnvRigger") idea. Install EnvHarness separately to use the adapter.
+
+nlohmann/json 3.11.3 (vendored, core/third_party/json.hpp)
+  https://github.com/nlohmann/json  -  MIT License, Copyright (c) 2013-2022 Niels Lohmann.

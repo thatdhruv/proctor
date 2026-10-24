@@ -33,7 +33,8 @@ class Patch:
 
 
 class Fixer(Protocol):
-    def propose(self, policy: VerifierPolicy, successes: dict[str, int]) -> tuple[VerifierPolicy, list[Patch]]: ...
+    def propose(self, policy: VerifierPolicy, successes: dict[str, int],
+                transcripts: dict[str, list] | None = None) -> tuple[VerifierPolicy, list[Patch]]: ...
 
 
 class ScriptedFixer:
@@ -46,7 +47,8 @@ class ScriptedFixer:
     def __init__(self, budget: int = 3):
         self.budget = budget
 
-    def propose(self, policy: VerifierPolicy, successes: dict[str, int]) -> tuple[VerifierPolicy, list[Patch]]:
+    def propose(self, policy: VerifierPolicy, successes: dict[str, int],
+                transcripts: dict[str, list] | None = None) -> tuple[VerifierPolicy, list[Patch]]:
         patches: list[Patch] = []
         for exploit_id, n in sorted(successes.items(), key=lambda kv: (-kv[1], kv[0])):
             if n == 0 or len(patches) >= self.budget:

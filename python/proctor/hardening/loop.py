@@ -39,6 +39,8 @@ class ExploitStat:
     cheats: int = 0           # reward > 0 and oracle says unsolved
     escapes: int = 0          # escape probe reached something it should not
     blocked_events: int = 0   # sandbox-denied syscalls during the attack
+    transcript: list = field(default_factory=list)  # first successful cheat (for the fixer)
+    reported: list = field(default_factory=list)    # LLM attackers: self-reported exploit types
 
     @property
     def rate(self) -> float:
@@ -57,8 +59,9 @@ class RoundReport:
     def by_type(self) -> dict[str, dict]:
         out = {t: {"attempts": 0, "cheats": 0} for t in EXPLOIT_TYPES}
         for s in self.exploits.values():
-            out[s.type]["attempts"] += s.attempts
-            out[s.type]["cheats"] += s.cheats + s.escapes
+            row = out.setdefault(s.type, {"attempts": 0, "cheats": 0})
+            row["attempts"] += s.attempts
+            row["cheats"] += s.cheats + s.escapes
         for v in out.values():
             v["rate"] = v["cheats"] / v["attempts"] if v["attempts"] else 0.0
         return out
@@ -70,7 +73,8 @@ class RoundReport:
 
     def to_dict(self) -> dict:
         return {"round": self.round, "policy": self.policy,
-                "exploits": {k: {**asdict(v), "rate": v.rate} for k, v in self.exploits.items()},
+                "exploits": {k: {**{f: x for f, x in asdict(v).items() if f != "transcript"}, "rate": v.rate}
+                             for k, v in self.exploits.items()},
                 "by_type": self.by_type(), "overall_rate": self.overall_rate(),
                 "honest_pass": self.honest_pass, "patches": [asdict(p) for p in self.patches],
                 "seconds": self.seconds}
@@ -100,6 +104,9 @@ def run_exploit(core: CoreClient, ex: Exploit, policy: VerifierPolicy, round_no:
                 stat.escapes += 1
             elif ep is not None and ep.cheated:
                 stat.cheats += 1
+                if not stat.transcript:
+                    stat.transcript = [{"action": s["action"], "obs": str(s["observation"])[:400]} for s in ep.steps]
+            stat.reported += ctx.notes
             telemetry.count("attempts", 1, exploit_type=ex.type, exploit=ex.id, round=str(round_no))
             if ctx.escaped or (ep is not None and ep.cheated):
                 telemetry.count("cheats", 1, exploit_type=ex.type, exploit=ex.id, round=str(round_no))
@@ -152,7 +159,7 @@ def hardening_loop(core: CoreClient, store: Store, *, fixer: Fixer | None = None
                  f"honest {rep.honest_pass}")
         if sum(succ.values()) == 0:
             break
-        policy, patches = fixer.propose(policy, succ)
+        policy, patches = fixer.propose(policy, succ, {k: v.transcript for k, v in rep.exploits.items()})
         rep.patches = patches
         progress("  patches: " + ", ".join(f"{p.flag} (for {p.because})" for p in patches))
         if not patches:

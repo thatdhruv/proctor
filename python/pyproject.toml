@@ -18,9 +18,13 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8", "matplotlib>=3.8", "gymnasium>=0.29"]
 llm = ["anthropic>=0.40"]
+envharness = ["envharness @ git+https://github.com/google-research/envharness"]
 
 [project.scripts]
 proctor = "proctor.cli:main"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["proctor"]
