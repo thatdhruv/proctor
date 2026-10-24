@@ -13,6 +13,7 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("containment", help="run the sandbox escape battery")
     sub.add_parser("harden", help="run the attack -> patch hardening loop")
     sub.add_parser("rollouts", help="parallel honest rollouts: end-to-end throughput")
+    sub.add_parser("netprobe", help="what can this pod reach? (use to verify the operator NetworkPolicy)")
     d = sub.add_parser("demo", help="play one honest and one cheating episode and print the transcript")
     d.add_argument("--env", default="coding", choices=["coding", "sql", "fsops"])
     args, rest = ap.parse_known_args(argv)
@@ -28,6 +29,9 @@ def main(argv: list[str] | None = None) -> None:
         run()
     elif args.cmd == "rollouts":
         from .rollouts import main as run
+        run()
+    elif args.cmd == "netprobe":
+        from .netprobe import main as run
         run()
     elif args.cmd == "demo":
         _demo(args.env)

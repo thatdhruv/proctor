@@ -1,0 +1,55 @@
+{
+  "host": "probe-control",
+  "probes": [
+    {
+      "target": "internet-tcp (1.1.1.1:443)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "internet-dns-tcp (8.8.8.8:53)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "internet-by-name (example.com:443)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "cloud-metadata (169.254.169.254:80)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "ConnectionRefusedError:111"
+    },
+    {
+      "target": "kube-apiserver (kubernetes.default.svc:443)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "in-cluster (canary.proctor-demo.svc:8080)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "allowlisted (postgres.proctor-demo.svc:5432)",
+      "expected": "reachable",
+      "reachable": true,
+      "detail": "connected"
+    }
+  ],
+  "leaks": [
+    "internet-tcp (1.1.1.1:443)",
+    "internet-dns-tcp (8.8.8.8:53)",
+    "internet-by-name (example.com:443)",
+    "kube-apiserver (kubernetes.default.svc:443)",
+    "in-cluster (canary.proctor-demo.svc:8080)"
+  ],
+  "allowlist_works": true
+}

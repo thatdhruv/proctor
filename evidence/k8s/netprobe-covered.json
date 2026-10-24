@@ -1,0 +1,49 @@
+{
+  "host": "probe-covered",
+  "probes": [
+    {
+      "target": "internet-tcp (1.1.1.1:443)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "TimeoutError"
+    },
+    {
+      "target": "internet-dns-tcp (8.8.8.8:53)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "TimeoutError"
+    },
+    {
+      "target": "internet-by-name (example.com:443)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "OSError:101"
+    },
+    {
+      "target": "cloud-metadata (169.254.169.254:80)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "TimeoutError"
+    },
+    {
+      "target": "kube-apiserver (kubernetes.default.svc:443)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "TimeoutError"
+    },
+    {
+      "target": "in-cluster (canary.proctor-demo.svc:8080)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "TimeoutError"
+    },
+    {
+      "target": "allowlisted (postgres.proctor-demo.svc:5432)",
+      "expected": "reachable",
+      "reachable": true,
+      "detail": "connected"
+    }
+  ],
+  "leaks": [],
+  "allowlist_works": true
+}

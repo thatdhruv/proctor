@@ -1,0 +1,23 @@
+apiVersion: proctor.dev/v1alpha1
+kind: ProctorRun
+metadata: { name: demo, namespace: proctor-demo }
+spec:
+  envType: mixed
+  rollouts: 1000
+  rolloutsPerShard: 50          # -> 20 indexed shards
+  workers: { min: 1, max: 8 }   # autoscaled to the backlog
+  quota:
+    maxEpisodes: 2000
+    maxStepsPerEpisode: 20
+    maxWallSeconds: 900
+  image: proctor-runner:dev
+  policy: hardened
+  egress:                        # the ONLY things a worker may talk to
+    - podSelector: { matchLabels: { app: postgres } }
+      port: 5432
+  env:
+    - { name: PROCTOR_STORE_DSN, value: "postgresql://proctor:proctor@postgres.proctor-demo.svc:5432/proctor" }
+    - { name: PROCTOR_PG_DSN, value: "postgresql://proctor:proctor@postgres.proctor-demo.svc:5432/proctor_envs" }
+  resources:
+    requests: { cpu: 500m, memory: 512Mi }
+    limits: { cpu: "2", memory: 2Gi }

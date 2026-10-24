@@ -1,0 +1,22 @@
+# Two identical pods; only `covered` carries the ProctorRun label that the operator's NetworkPolicy selects.
+apiVersion: v1
+kind: Pod
+metadata: { name: probe-covered, namespace: proctor-demo, labels: { proctor.dev/run: demo } }
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+  containers:
+    - name: probe
+      image: proctor-runner:dev
+      args: ["netprobe", "--allow", "postgres.proctor-demo.svc:5432", "--deny", "canary.proctor-demo.svc:8080"]
+---
+apiVersion: v1
+kind: Pod
+metadata: { name: probe-control, namespace: proctor-demo }
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+  containers:
+    - name: probe
+      image: proctor-runner:dev
+      args: ["netprobe", "--allow", "postgres.proctor-demo.svc:5432", "--deny", "canary.proctor-demo.svc:8080"]

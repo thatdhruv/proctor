@@ -1,0 +1,60 @@
+apiVersion: proctor.dev/v1alpha1
+kind: ProctorRun
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"proctor.dev/v1alpha1","kind":"ProctorRun","metadata":{"annotations":{},"name":"demo","namespace":"proctor-demo"},"spec":{"egress":[{"podSelector":{"matchLabels":{"app":"postgres"}},"port":5432}],"env":[{"name":"PROCTOR_STORE_DSN","value":"postgresql://proctor:proctor@postgres.proctor-demo.svc:5432/proctor"},{"name":"PROCTOR_PG_DSN","value":"postgresql://proctor:proctor@postgres.proctor-demo.svc:5432/proctor_envs"}],"envType":"mixed","image":"proctor-runner:dev","policy":"hardened","quota":{"maxEpisodes":2000,"maxStepsPerEpisode":20,"maxWallSeconds":900},"resources":{"limits":{"cpu":"2","memory":"2Gi"},"requests":{"cpu":"500m","memory":"512Mi"}},"rollouts":1000,"rolloutsPerShard":50,"workers":{"max":8,"min":1}}}
+  creationTimestamp: "2026-10-24T17:25:21Z"
+  generation: 1
+  name: demo
+  namespace: proctor-demo
+  resourceVersion: "1561"
+  uid: 8cdbc26a-99bd-482f-9cea-0eaeeb630139
+spec:
+  allowDNS: true
+  egress:
+  - podSelector:
+      matchLabels:
+        app: postgres
+    port: 5432
+  env:
+  - name: PROCTOR_STORE_DSN
+    value: postgresql://proctor:proctor@postgres.proctor-demo.svc:5432/proctor
+  - name: PROCTOR_PG_DSN
+    value: postgresql://proctor:proctor@postgres.proctor-demo.svc:5432/proctor_envs
+  envType: mixed
+  image: proctor-runner:dev
+  policy: hardened
+  privileged: true
+  quota:
+    maxEpisodes: 2000
+    maxStepsPerEpisode: 20
+    maxWallSeconds: 900
+  resources:
+    limits:
+      cpu: "2"
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  rollouts: 1000
+  rolloutsPerShard: 50
+  workers:
+    max: 8
+    min: 1
+status:
+  completionTime: "2026-10-24T17:26:14Z"
+  conditions:
+  - lastTransitionTime: "2026-10-24T17:26:14Z"
+    message: all shards completed
+    observedGeneration: 1
+    reason: AllShardsDone
+    status: "True"
+    type: Complete
+  desiredWorkers: 1
+  message: all shards completed
+  observedGeneration: 1
+  phase: Succeeded
+  shards: 20
+  shardsSucceeded: 20
+  startTime: "2026-10-24T17:25:41Z"

@@ -1,0 +1,24 @@
+NAME                       READY   STATUS      RESTARTS   AGE   IP                NODE              NOMINATED NODE   READINESS GATES
+canary-7ccf7c67d4-cp97q    1/1     Running     0          70s   192.168.232.129   proctor-worker    <none>           <none>
+demo-0-5c6tc               0/1     Completed   0          34s   192.168.4.67      proctor-worker2   <none>           <none>
+demo-1-4hb28               0/1     Completed   0          34s   192.168.4.69      proctor-worker2   <none>           <none>
+demo-10-qq8rl              0/1     Completed   0          22s   192.168.232.135   proctor-worker    <none>           <none>
+demo-11-kf7rl              0/1     Completed   0          22s   192.168.4.73      proctor-worker2   <none>           <none>
+demo-12-5l9dn              0/1     Completed   0          22s   192.168.232.136   proctor-worker    <none>           <none>
+demo-13-tgrqz              0/1     Completed   0          21s   192.168.232.137   proctor-worker    <none>           <none>
+demo-14-8z7sd              0/1     Completed   0          21s   192.168.4.74      proctor-worker2   <none>           <none>
+demo-15-bbvz5              0/1     Completed   0          21s   192.168.232.138   proctor-worker    <none>           <none>
+demo-16-m7pmm              0/1     Completed   0          11s   192.168.4.75      proctor-worker2   <none>           <none>
+demo-17-h2p24              0/1     Completed   0          11s   192.168.4.77      proctor-worker2   <none>           <none>
+demo-18-4gjd5              0/1     Completed   0          11s   192.168.232.139   proctor-worker    <none>           <none>
+demo-19-dzsfb              0/1     Completed   0          11s   192.168.4.76      proctor-worker2   <none>           <none>
+demo-2-v8z9t               0/1     Completed   0          34s   192.168.232.132   proctor-worker    <none>           <none>
+demo-3-j2mln               0/1     Completed   0          34s   192.168.232.131   proctor-worker    <none>           <none>
+demo-4-dfnnj               0/1     Completed   0          34s   192.168.4.68      proctor-worker2   <none>           <none>
+demo-5-kph5n               0/1     Completed   0          34s   192.168.232.133   proctor-worker    <none>           <none>
+demo-6-684k6               0/1     Completed   0          34s   192.168.232.134   proctor-worker    <none>           <none>
+demo-7-vjb9f               0/1     Completed   0          34s   192.168.4.70      proctor-worker2   <none>           <none>
+demo-8-lj4s2               0/1     Completed   0          22s   192.168.4.71      proctor-worker2   <none>           <none>
+demo-9-5c5ck               0/1     Completed   0          22s   192.168.4.72      proctor-worker2   <none>           <none>
+demo-selftest              0/1     Completed   0          53s   192.168.4.66      proctor-worker2   <none>           <none>
+postgres-565bcc7f7-vqv57   1/1     Running     0          70s   192.168.4.65      proctor-worker2   <none>           <none>

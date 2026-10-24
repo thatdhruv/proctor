@@ -1,0 +1,202 @@
+[
+    {
+        "t":  2.2,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  4.4,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  6.5,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  8.7,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  10.9,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  13,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  15.2,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  17.4,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  19.5,
+        "phase":  "SelfTest",
+        "parallelism":  0,
+        "active":  0,
+        "succeeded":  0,
+        "completions":  0
+    },
+    {
+        "t":  21.8,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  0,
+        "completions":  20
+    },
+    {
+        "t":  24.1,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  0,
+        "completions":  20
+    },
+    {
+        "t":  26.3,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  0,
+        "completions":  20
+    },
+    {
+        "t":  28.4,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  0,
+        "completions":  20
+    },
+    {
+        "t":  30.6,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  0,
+        "completions":  20
+    },
+    {
+        "t":  32.8,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  5,
+        "completions":  20
+    },
+    {
+        "t":  35.1,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  8,
+        "completions":  20
+    },
+    {
+        "t":  37.3,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  8,
+        "completions":  20
+    },
+    {
+        "t":  39.4,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  8,
+        "completions":  20
+    },
+    {
+        "t":  41.6,
+        "phase":  "Running",
+        "parallelism":  8,
+        "active":  8,
+        "succeeded":  8,
+        "completions":  20
+    },
+    {
+        "t":  43.8,
+        "phase":  "Running",
+        "parallelism":  5,
+        "active":  5,
+        "succeeded":  15,
+        "completions":  20
+    },
+    {
+        "t":  46,
+        "phase":  "Running",
+        "parallelism":  4,
+        "active":  4,
+        "succeeded":  16,
+        "completions":  20
+    },
+    {
+        "t":  48.2,
+        "phase":  "Running",
+        "parallelism":  4,
+        "active":  4,
+        "succeeded":  16,
+        "completions":  20
+    },
+    {
+        "t":  50.4,
+        "phase":  "Running",
+        "parallelism":  4,
+        "active":  4,
+        "succeeded":  16,
+        "completions":  20
+    },
+    {
+        "t":  52.5,
+        "phase":  "Running",
+        "parallelism":  4,
+        "active":  4,
+        "succeeded":  16,
+        "completions":  20
+    },
+    {
+        "t":  54.7,
+        "phase":  "Succeeded",
+        "parallelism":  1,
+        "active":  0,
+        "succeeded":  20,
+        "completions":  20
+    }
+]

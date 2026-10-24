@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: proctor-operator, namespace: proctor-system }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: { name: proctor-operator }
+roleRef: { apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: proctor-operator }
+subjects: [{ kind: ServiceAccount, name: proctor-operator, namespace: proctor-system }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: proctor-operator, namespace: proctor-system }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: proctor-operator } }
+  template:
+    metadata: { labels: { app: proctor-operator } }
+    spec:
+      serviceAccountName: proctor-operator
+      containers:
+        - name: manager
+          image: proctor-operator:dev
+          imagePullPolicy: IfNotPresent
+          args: ["--leader-elect=false"]
+          ports: [{ containerPort: 8080, name: metrics }]
+          readinessProbe: { httpGet: { path: /readyz, port: 8081 } }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, runAsNonRoot: true }
