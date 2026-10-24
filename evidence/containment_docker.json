@@ -1,0 +1,1518 @@
+{
+  "Full sandbox (all layers)": {
+    "config": {
+      "seccomp": true,
+      "cgroup": true,
+      "cgroup_note": "",
+      "arch": "x86_64"
+    },
+    "attempts": [
+      {
+        "id": "net.tcp_internet",
+        "category": "network",
+        "desc": "TCP connect to 1.1.1.1:80",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.tcp_dns_8888",
+        "category": "network",
+        "desc": "TCP connect to 8.8.8.8:53",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.udp_dns",
+        "category": "network",
+        "desc": "UDP datagram to 1.1.1.1:53",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.dns_resolve",
+        "category": "network",
+        "desc": "resolve example.com",
+        "escaped": false,
+        "errno": "-2",
+        "syscall": null,
+        "layer": "no resolver (nsswitch: files) + netns",
+        "logged": null
+      },
+      {
+        "id": "net.canary_loopback",
+        "category": "network",
+        "desc": "connect to host canary listener on 127.0.0.1",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.loopback_postgres",
+        "category": "network",
+        "desc": "connect to 127.0.0.1:5433 (host Postgres)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.metadata_service",
+        "category": "network",
+        "desc": "connect to cloud metadata 169.254.169.254:80",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.ipv6",
+        "category": "network",
+        "desc": "TCP connect over IPv6",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.raw_icmp",
+        "category": "network",
+        "desc": "raw ICMP socket",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.af_packet",
+        "category": "network",
+        "desc": "AF_PACKET socket",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.netlink",
+        "category": "network",
+        "desc": "enumerate network interfaces that are UP (other than lo)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": true
+      },
+      {
+        "id": "net.docker_socket",
+        "category": "network",
+        "desc": "connect to /var/run/docker.sock",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "net.abstract_unix",
+        "category": "network",
+        "desc": "connect to host abstract unix socket",
+        "escaped": false,
+        "errno": "ECONNREFUSED",
+        "syscall": null,
+        "layer": "net-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.canary_file",
+        "category": "host-fs",
+        "desc": "read host canary file by absolute path",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.etc_shadow",
+        "category": "host-fs",
+        "desc": "read /etc/shadow",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.host_home",
+        "category": "host-fs",
+        "desc": "list /home",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.windows_drive",
+        "category": "host-fs",
+        "desc": "list /mnt/c",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.proc_init_root",
+        "category": "host-fs",
+        "desc": "read /proc/1/root/etc/passwd",
+        "escaped": false,
+        "errno": "EACCES",
+        "syscall": null,
+        "layer": "pid-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.proc_init_mem",
+        "category": "host-fs",
+        "desc": "read /proc/1/mem (sandbox init: snapshot store)",
+        "escaped": false,
+        "errno": "EACCES",
+        "syscall": null,
+        "layer": "dumpable",
+        "logged": null
+      },
+      {
+        "id": "fs.proc_other_pids",
+        "category": "host-fs",
+        "desc": "see processes outside the sandbox",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "pid-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.dev_mem",
+        "category": "host-fs",
+        "desc": "open /dev/mem",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.dev_disk",
+        "category": "host-fs",
+        "desc": "open block device /dev/sda",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.sys_cgroup",
+        "category": "host-fs",
+        "desc": "write /sys/fs/cgroup/escape",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.write_usr",
+        "category": "host-fs",
+        "desc": "create /usr/bin/pwned",
+        "escaped": false,
+        "errno": "EROFS",
+        "syscall": null,
+        "layer": "ro-bind",
+        "logged": null
+      },
+      {
+        "id": "fs.write_etc",
+        "category": "host-fs",
+        "desc": "create /etc/pwned",
+        "escaped": false,
+        "errno": "EROFS",
+        "syscall": null,
+        "layer": "ro-rootfs",
+        "logged": null
+      },
+      {
+        "id": "fs.daemon_socket",
+        "category": "host-fs",
+        "desc": "find the proctord control socket",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.symlink_to_host_root",
+        "category": "host-fs",
+        "desc": "symlink /workspace/r -> /proc/1/root and read through it",
+        "escaped": false,
+        "errno": "EACCES",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "sys.mount",
+        "category": "syscall",
+        "desc": "mount a tmpfs",
+        "escaped": false,
+        "errno": null,
+        "syscall": "mount",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.pivot_root",
+        "category": "syscall",
+        "desc": "pivot_root",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "pivot_root",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.chroot",
+        "category": "syscall",
+        "desc": "chroot into /proc/1/root",
+        "escaped": false,
+        "errno": null,
+        "syscall": "chroot",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.unshare_user",
+        "category": "syscall",
+        "desc": "unshare(CLONE_NEWUSER)",
+        "escaped": false,
+        "errno": null,
+        "syscall": "unshare",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.unshare_net",
+        "category": "syscall",
+        "desc": "unshare(CLONE_NEWNET)",
+        "escaped": false,
+        "errno": null,
+        "syscall": "unshare",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.setns",
+        "category": "syscall",
+        "desc": "setns into /proc/self/ns/net",
+        "escaped": false,
+        "errno": null,
+        "syscall": "setns",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.clone_newuser",
+        "category": "syscall",
+        "desc": "fork with clone(CLONE_NEWUSER)",
+        "escaped": false,
+        "errno": null,
+        "syscall": "clone",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.ptrace_attach",
+        "category": "syscall",
+        "desc": "ptrace(ATTACH) the sandbox init",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "ptrace",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.process_vm_readv",
+        "category": "syscall",
+        "desc": "process_vm_readv: read memory of sandbox init (pid 1)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "process_vm_readv",
+        "layer": "seccomp|dumpable",
+        "logged": true
+      },
+      {
+        "id": "sys.bpf",
+        "category": "syscall",
+        "desc": "bpf(BPF_PROG_LOAD)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "bpf",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.kexec_load",
+        "category": "syscall",
+        "desc": "kexec_load",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "kexec_load",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.init_module",
+        "category": "syscall",
+        "desc": "init_module",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "init_module",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.reboot",
+        "category": "syscall",
+        "desc": "reboot",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "reboot",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.sethostname",
+        "category": "syscall",
+        "desc": "sethostname",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "sethostname",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.open_by_handle_at",
+        "category": "syscall",
+        "desc": "open_by_handle_at (container breakout primitive)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "open_by_handle_at",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.io_uring_setup",
+        "category": "syscall",
+        "desc": "io_uring_setup",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "io_uring_setup",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.perf_event_open",
+        "category": "syscall",
+        "desc": "perf_event_open",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "perf_event_open",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.userfaultfd",
+        "category": "syscall",
+        "desc": "userfaultfd",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "userfaultfd",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.keyctl",
+        "category": "syscall",
+        "desc": "keyctl",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "keyctl",
+        "layer": "seccomp",
+        "logged": true
+      },
+      {
+        "id": "sys.capabilities",
+        "category": "syscall",
+        "desc": "hold any Linux capability",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "caps-dropped",
+        "logged": null
+      },
+      {
+        "id": "res.memory_bomb",
+        "category": "resource",
+        "desc": "touch 1.5 GiB of memory",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "cgroup memory.max / RLIMIT_AS",
+        "logged": null
+      },
+      {
+        "id": "res.disk_fill",
+        "category": "resource",
+        "desc": "write 400 MiB into the workspace",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "tmpfs size / RLIMIT_FSIZE",
+        "logged": null
+      },
+      {
+        "id": "res.fork_storm",
+        "category": "resource",
+        "desc": "fork 700 processes",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "cgroup pids.max",
+        "logged": null
+      }
+    ],
+    "denied_events": [
+      {
+        "args": [
+          2,
+          524289,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=1",
+        "nr": 41,
+        "pid": 11,
+        "seq": 0,
+        "syscall": "socket",
+        "t": 1792863055.8620024
+      },
+      {
+        "args": [
+          2,
+          524289,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=1",
+        "nr": 41,
+        "pid": 11,
+        "seq": 1,
+        "syscall": "socket",
+        "t": 1792863055.86208
+      },
+      {
+        "args": [
+          2,
+          524290,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=2",
+        "nr": 41,
+        "pid": 11,
+        "seq": 2,
+        "syscall": "socket",
+        "t": 1792863055.862148
+      },
+      {
+        "args": [
+          2,
+          524289,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=1",
+        "nr": 41,
+        "pid": 11,
+        "seq": 3,
+        "syscall": "socket",
+        "t": 1792863055.863483
+      },
+      {
+        "args": [
+          2,
+          524289,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=1",
+        "nr": 41,
+        "pid": 11,
+        "seq": 4,
+        "syscall": "socket",
+        "t": 1792863055.86355
+      },
+      {
+        "args": [
+          2,
+          524289,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=1",
+        "nr": 41,
+        "pid": 11,
+        "seq": 5,
+        "syscall": "socket",
+        "t": 1792863055.863619
+      },
+      {
+        "args": [
+          10,
+          524289,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET6 type=1",
+        "nr": 41,
+        "pid": 11,
+        "seq": 6,
+        "syscall": "socket",
+        "t": 1792863055.8636854
+      },
+      {
+        "args": [
+          2,
+          524291,
+          1,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=3",
+        "nr": 41,
+        "pid": 11,
+        "seq": 7,
+        "syscall": "socket",
+        "t": 1792863055.8637452
+      },
+      {
+        "args": [
+          17,
+          524291,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_PACKET type=3",
+        "nr": 41,
+        "pid": 11,
+        "seq": 8,
+        "syscall": "socket",
+        "t": 1792863055.8638134
+      },
+      {
+        "args": [
+          2,
+          524290,
+          0,
+          106919888553135,
+          0,
+          0
+        ],
+        "note": "network socket domain=AF_INET type=2",
+        "nr": 41,
+        "pid": 11,
+        "seq": 9,
+        "syscall": "socket",
+        "t": 1792863055.8639238
+      },
+      {
+        "args": [
+          126132362772896,
+          126132362772992,
+          126132362773088,
+          0,
+          0,
+          0
+        ],
+        "note": "",
+        "nr": 165,
+        "pid": 11,
+        "seq": 10,
+        "syscall": "mount",
+        "t": 1792863055.8642802
+      },
+      {
+        "args": [
+          126132362772992,
+          126132362772992,
+          126132360845664,
+          126132362644144,
+          126132362899040,
+          6
+        ],
+        "note": "",
+        "nr": 155,
+        "pid": 11,
+        "seq": 11,
+        "syscall": "pivot_root",
+        "t": 1792863055.8643506
+      },
+      {
+        "args": [
+          126132362774288,
+          126132362826096,
+          126132364138016,
+          0,
+          126132364162752,
+          106919886231375
+        ],
+        "note": "",
+        "nr": 161,
+        "pid": 11,
+        "seq": 12,
+        "syscall": "chroot",
+        "t": 1792863055.864415
+      },
+      {
+        "args": [
+          268435456,
+          126132362826096,
+          126132364138016,
+          0,
+          126132364162752,
+          106919886231375
+        ],
+        "note": "",
+        "nr": 272,
+        "pid": 11,
+        "seq": 13,
+        "syscall": "unshare",
+        "t": 1792863055.864476
+      },
+      {
+        "args": [
+          1073741824,
+          126132362826096,
+          126132364138016,
+          0,
+          126132364162752,
+          106919886231375
+        ],
+        "note": "",
+        "nr": 272,
+        "pid": 11,
+        "seq": 14,
+        "syscall": "unshare",
+        "t": 1792863055.8645353
+      },
+      {
+        "args": [
+          4,
+          0,
+          126132362522896,
+          0,
+          126132362872240,
+          106919967216660
+        ],
+        "note": "",
+        "nr": 308,
+        "pid": 11,
+        "seq": 15,
+        "syscall": "setns",
+        "t": 1792863055.864625
+      },
+      {
+        "args": [
+          268435456,
+          0,
+          0,
+          0,
+          0,
+          6
+        ],
+        "note": "clone with namespace flags 0x10000000",
+        "nr": 56,
+        "pid": 11,
+        "seq": 16,
+        "syscall": "clone",
+        "t": 1792863055.8646805
+      },
+      {
+        "args": [
+          16,
+          1,
+          0,
+          0,
+          126132360846064,
+          6
+        ],
+        "note": "ptrace request=16 target=1",
+        "nr": 101,
+        "pid": 11,
+        "seq": 17,
+        "syscall": "ptrace",
+        "t": 1792863055.8647451
+      },
+      {
+        "args": [
+          1,
+          126132363031440,
+          1,
+          126132363032464,
+          1,
+          0
+        ],
+        "note": "",
+        "nr": 310,
+        "pid": 11,
+        "seq": 18,
+        "syscall": "process_vm_readv",
+        "t": 1792863055.8649316
+      },
+      {
+        "args": [
+          5,
+          0,
+          0,
+          126132362823456,
+          126132362898032,
+          6
+        ],
+        "note": "",
+        "nr": 321,
+        "pid": 11,
+        "seq": 19,
+        "syscall": "bpf",
+        "t": 1792863055.865006
+      },
+      {
+        "args": [
+          0,
+          0,
+          0,
+          0,
+          5,
+          6
+        ],
+        "note": "",
+        "nr": 246,
+        "pid": 11,
+        "seq": 20,
+        "syscall": "kexec_load",
+        "t": 1792863055.8650875
+      },
+      {
+        "args": [
+          0,
+          0,
+          126132363542608,
+          126132362823456,
+          126132362898032,
+          6
+        ],
+        "note": "",
+        "nr": 175,
+        "pid": 11,
+        "seq": 21,
+        "syscall": "init_module",
+        "t": 1792863055.8651643
+      },
+      {
+        "args": [
+          4276215469,
+          672274793,
+          1126301404,
+          0,
+          0,
+          6
+        ],
+        "note": "",
+        "nr": 169,
+        "pid": 11,
+        "seq": 22,
+        "syscall": "reboot",
+        "t": 1792863055.8652434
+      },
+      {
+        "args": [
+          126132362781296,
+          5,
+          106919968094560,
+          126132360846088,
+          0,
+          6
+        ],
+        "note": "",
+        "nr": 170,
+        "pid": 11,
+        "seq": 23,
+        "syscall": "sethostname",
+        "t": 1792863055.8653126
+      },
+      {
+        "args": [
+          0,
+          0,
+          0,
+          140728730351744,
+          126132361909584,
+          6
+        ],
+        "note": "",
+        "nr": 304,
+        "pid": 11,
+        "seq": 24,
+        "syscall": "open_by_handle_at",
+        "t": 1792863055.8653736
+      },
+      {
+        "args": [
+          8,
+          0,
+          106919968094560,
+          126132360846088,
+          0,
+          6
+        ],
+        "note": "",
+        "nr": 425,
+        "pid": 11,
+        "seq": 25,
+        "syscall": "io_uring_setup",
+        "t": 1792863055.8654387
+      },
+      {
+        "args": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          6
+        ],
+        "note": "",
+        "nr": 298,
+        "pid": 11,
+        "seq": 26,
+        "syscall": "perf_event_open",
+        "t": 1792863055.865499
+      },
+      {
+        "args": [
+          0,
+          140728730351520,
+          126132361753747,
+          126132361291712,
+          106919890383008,
+          6
+        ],
+        "note": "",
+        "nr": 323,
+        "pid": 11,
+        "seq": 27,
+        "syscall": "userfaultfd",
+        "t": 1792863055.8655782
+      },
+      {
+        "args": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          6
+        ],
+        "note": "",
+        "nr": 250,
+        "pid": 11,
+        "seq": 28,
+        "syscall": "keyctl",
+        "t": 1792863055.8656492
+      }
+    ],
+    "canary_connections": 0,
+    "summary": {
+      "attempts": 50,
+      "blocked": 50,
+      "escaped": [],
+      "host_reach": [],
+      "seccomp_blocked_and_logged": 29,
+      "seccomp_blocked_total": 29,
+      "denied_events": 29,
+      "canary_connections": 0
+    },
+    "error": ""
+  },
+  "Ablation: seccomp disabled (network namespace alone)": {
+    "config": {
+      "seccomp": false,
+      "cgroup": true,
+      "cgroup_note": "",
+      "arch": "x86_64"
+    },
+    "attempts": [
+      {
+        "id": "net.tcp_internet",
+        "category": "network",
+        "desc": "TCP connect to 1.1.1.1:80",
+        "escaped": false,
+        "errno": "ENETUNREACH",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.tcp_dns_8888",
+        "category": "network",
+        "desc": "TCP connect to 8.8.8.8:53",
+        "escaped": false,
+        "errno": "ENETUNREACH",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.udp_dns",
+        "category": "network",
+        "desc": "UDP datagram to 1.1.1.1:53",
+        "escaped": false,
+        "errno": "ENETUNREACH",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.dns_resolve",
+        "category": "network",
+        "desc": "resolve example.com",
+        "escaped": false,
+        "errno": "-2",
+        "syscall": null,
+        "layer": "no resolver (nsswitch: files) + netns",
+        "logged": null
+      },
+      {
+        "id": "net.canary_loopback",
+        "category": "network",
+        "desc": "connect to host canary listener on 127.0.0.1",
+        "escaped": false,
+        "errno": "ENETUNREACH",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.loopback_postgres",
+        "category": "network",
+        "desc": "connect to 127.0.0.1:5433 (host Postgres)",
+        "escaped": false,
+        "errno": "ENETUNREACH",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.metadata_service",
+        "category": "network",
+        "desc": "connect to cloud metadata 169.254.169.254:80",
+        "escaped": false,
+        "errno": "ENETUNREACH",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.ipv6",
+        "category": "network",
+        "desc": "TCP connect over IPv6",
+        "escaped": false,
+        "errno": "EADDRNOTAVAIL",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.raw_icmp",
+        "category": "network",
+        "desc": "raw ICMP socket",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.af_packet",
+        "category": "network",
+        "desc": "AF_PACKET socket",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.netlink",
+        "category": "network",
+        "desc": "enumerate network interfaces that are UP (other than lo)",
+        "escaped": false,
+        "errno": null,
+        "syscall": "socket",
+        "layer": "seccomp|netns",
+        "logged": false
+      },
+      {
+        "id": "net.docker_socket",
+        "category": "network",
+        "desc": "connect to /var/run/docker.sock",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "net.abstract_unix",
+        "category": "network",
+        "desc": "connect to host abstract unix socket",
+        "escaped": false,
+        "errno": "ECONNREFUSED",
+        "syscall": null,
+        "layer": "net-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.canary_file",
+        "category": "host-fs",
+        "desc": "read host canary file by absolute path",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.etc_shadow",
+        "category": "host-fs",
+        "desc": "read /etc/shadow",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.host_home",
+        "category": "host-fs",
+        "desc": "list /home",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.windows_drive",
+        "category": "host-fs",
+        "desc": "list /mnt/c",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.proc_init_root",
+        "category": "host-fs",
+        "desc": "read /proc/1/root/etc/passwd",
+        "escaped": false,
+        "errno": "EACCES",
+        "syscall": null,
+        "layer": "pid-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.proc_init_mem",
+        "category": "host-fs",
+        "desc": "read /proc/1/mem (sandbox init: snapshot store)",
+        "escaped": false,
+        "errno": "EACCES",
+        "syscall": null,
+        "layer": "dumpable",
+        "logged": null
+      },
+      {
+        "id": "fs.proc_other_pids",
+        "category": "host-fs",
+        "desc": "see processes outside the sandbox",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "pid-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.dev_mem",
+        "category": "host-fs",
+        "desc": "open /dev/mem",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.dev_disk",
+        "category": "host-fs",
+        "desc": "open block device /dev/sda",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.sys_cgroup",
+        "category": "host-fs",
+        "desc": "write /sys/fs/cgroup/escape",
+        "escaped": false,
+        "errno": "ENOENT",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.write_usr",
+        "category": "host-fs",
+        "desc": "create /usr/bin/pwned",
+        "escaped": false,
+        "errno": "EROFS",
+        "syscall": null,
+        "layer": "ro-bind",
+        "logged": null
+      },
+      {
+        "id": "fs.write_etc",
+        "category": "host-fs",
+        "desc": "create /etc/pwned",
+        "escaped": false,
+        "errno": "EROFS",
+        "syscall": null,
+        "layer": "ro-rootfs",
+        "logged": null
+      },
+      {
+        "id": "fs.daemon_socket",
+        "category": "host-fs",
+        "desc": "find the proctord control socket",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "fs.symlink_to_host_root",
+        "category": "host-fs",
+        "desc": "symlink /workspace/r -> /proc/1/root and read through it",
+        "escaped": false,
+        "errno": "EACCES",
+        "syscall": null,
+        "layer": "mount-ns",
+        "logged": null
+      },
+      {
+        "id": "sys.mount",
+        "category": "syscall",
+        "desc": "mount a tmpfs",
+        "escaped": false,
+        "errno": null,
+        "syscall": "mount",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.pivot_root",
+        "category": "syscall",
+        "desc": "pivot_root",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "pivot_root",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.chroot",
+        "category": "syscall",
+        "desc": "chroot into /proc/1/root",
+        "escaped": false,
+        "errno": null,
+        "syscall": "chroot",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.unshare_user",
+        "category": "syscall",
+        "desc": "unshare(CLONE_NEWUSER)",
+        "escaped": true,
+        "errno": null,
+        "syscall": "unshare",
+        "layer": "seccomp",
+        "logged": null
+      },
+      {
+        "id": "sys.unshare_net",
+        "category": "syscall",
+        "desc": "unshare(CLONE_NEWNET)",
+        "escaped": true,
+        "errno": null,
+        "syscall": "unshare",
+        "layer": "seccomp",
+        "logged": null
+      },
+      {
+        "id": "sys.setns",
+        "category": "syscall",
+        "desc": "setns into /proc/self/ns/net",
+        "escaped": true,
+        "errno": null,
+        "syscall": "setns",
+        "layer": "seccomp",
+        "logged": null
+      },
+      {
+        "id": "sys.clone_newuser",
+        "category": "syscall",
+        "desc": "fork with clone(CLONE_NEWUSER)",
+        "escaped": false,
+        "errno": null,
+        "syscall": "clone",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.ptrace_attach",
+        "category": "syscall",
+        "desc": "ptrace(ATTACH) the sandbox init",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "ptrace",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.process_vm_readv",
+        "category": "syscall",
+        "desc": "process_vm_readv: read memory of sandbox init (pid 1)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "process_vm_readv",
+        "layer": "seccomp|dumpable",
+        "logged": false
+      },
+      {
+        "id": "sys.bpf",
+        "category": "syscall",
+        "desc": "bpf(BPF_PROG_LOAD)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "bpf",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.kexec_load",
+        "category": "syscall",
+        "desc": "kexec_load",
+        "escaped": false,
+        "errno": "ENOSYS",
+        "syscall": "kexec_load",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.init_module",
+        "category": "syscall",
+        "desc": "init_module",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "init_module",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.reboot",
+        "category": "syscall",
+        "desc": "reboot",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "reboot",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.sethostname",
+        "category": "syscall",
+        "desc": "sethostname",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "sethostname",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.open_by_handle_at",
+        "category": "syscall",
+        "desc": "open_by_handle_at (container breakout primitive)",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "open_by_handle_at",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.io_uring_setup",
+        "category": "syscall",
+        "desc": "io_uring_setup",
+        "escaped": false,
+        "errno": "EFAULT",
+        "syscall": "io_uring_setup",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.perf_event_open",
+        "category": "syscall",
+        "desc": "perf_event_open",
+        "escaped": false,
+        "errno": "EFAULT",
+        "syscall": "perf_event_open",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.userfaultfd",
+        "category": "syscall",
+        "desc": "userfaultfd",
+        "escaped": false,
+        "errno": "EPERM",
+        "syscall": "userfaultfd",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.keyctl",
+        "category": "syscall",
+        "desc": "keyctl",
+        "escaped": false,
+        "errno": "EINVAL",
+        "syscall": "keyctl",
+        "layer": "seccomp",
+        "logged": false
+      },
+      {
+        "id": "sys.capabilities",
+        "category": "syscall",
+        "desc": "hold any Linux capability",
+        "escaped": true,
+        "errno": null,
+        "syscall": null,
+        "layer": "caps-dropped",
+        "logged": null
+      },
+      {
+        "id": "res.memory_bomb",
+        "category": "resource",
+        "desc": "touch 1.5 GiB of memory",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "cgroup memory.max / RLIMIT_AS",
+        "logged": null
+      },
+      {
+        "id": "res.disk_fill",
+        "category": "resource",
+        "desc": "write 400 MiB into the workspace",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "tmpfs size / RLIMIT_FSIZE",
+        "logged": null
+      },
+      {
+        "id": "res.fork_storm",
+        "category": "resource",
+        "desc": "fork 700 processes",
+        "escaped": false,
+        "errno": null,
+        "syscall": null,
+        "layer": "cgroup pids.max",
+        "logged": null
+      }
+    ],
+    "denied_events": [],
+    "canary_connections": 0,
+    "summary": {
+      "attempts": 50,
+      "blocked": 46,
+      "escaped": [
+        "sys.unshare_user",
+        "sys.unshare_net",
+        "sys.setns",
+        "sys.capabilities"
+      ],
+      "host_reach": [],
+      "seccomp_blocked_and_logged": 0,
+      "seccomp_blocked_total": 26,
+      "denied_events": 0,
+      "canary_connections": 0
+    },
+    "error": ""
+  }
+}

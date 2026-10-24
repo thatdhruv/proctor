@@ -1,0 +1,54 @@
+# kind with its default CNI (kindnet), which does not enforce NetworkPolicy
+kubectl get proctorrun demo
+NAME   PHASE    WORKERS   SHARDS   AGE
+demo   Failed                      3s
+
+reason:  NetworkPolicyNotEnforced
+message: egress self-test failed: a pod under the run's NetworkPolicy reached a forbidden destination; the cluster CNI does not enforce NetworkPolicy. Refusing to start workers (see logs of pod demo-selftest).
+
+kubectl -n proctor-demo get jobs
+No resources found in proctor-demo namespace.
+
+self-test pod log (leaks = reachable although the pod carries the run's NetworkPolicy label):
+{
+  "host": "demo-selftest",
+  "probes": [
+    {
+      "target": "internet-tcp (1.1.1.1:443)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "internet-dns-tcp (8.8.8.8:53)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "internet-by-name (example.com:443)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    },
+    {
+      "target": "cloud-metadata (169.254.169.254:80)",
+      "expected": "blocked",
+      "reachable": false,
+      "detail": "ConnectionRefusedError:111"
+    },
+    {
+      "target": "kube-apiserver (kubernetes.default.svc:443)",
+      "expected": "blocked",
+      "reachable": true,
+      "detail": "connected"
+    }
+  ],
+  "leaks": [
+    "internet-tcp (1.1.1.1:443)",
+    "internet-dns-tcp (8.8.8.8:53)",
+    "internet-by-name (example.com:443)",
+    "kube-apiserver (kubernetes.default.svc:443)"
+  ],
+  "allowlist_works": true
+}

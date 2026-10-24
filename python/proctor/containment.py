@@ -76,7 +76,21 @@ attempt("net.metadata_service", "network", "connect to cloud metadata 169.254.16
 attempt("net.ipv6", "network", "TCP connect over IPv6", lambda: tcp("2606:4700:4700::1111", 80, socket.AF_INET6), "socket", "seccomp|netns")
 attempt("net.raw_icmp", "network", "raw ICMP socket", lambda: socket.socket(socket.AF_INET, socket.SOCK_RAW, 1) and True, "socket", "seccomp|netns")
 attempt("net.af_packet", "network", "AF_PACKET socket", lambda: socket.socket(socket.AF_PACKET, socket.SOCK_RAW) and True, "socket", "seccomp|netns")
-attempt("net.netlink", "network", "AF_NETLINK socket: enumerate interfaces other than lo", lambda: [n for _, n in socket.if_nameindex() if n != "lo"], "socket", "seccomp|netns")
+def usable_interfaces():
+    """Interfaces other than lo that are administratively UP. (A fresh netns also holds `tunl0`, the kernel's
+    per-namespace fallback tunnel device: it is DOWN and has no route, so it is not a way out.)"""
+    import fcntl, struct
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    up = []
+    for _, name in socket.if_nameindex():
+        if name == "lo":
+            continue
+        flags = struct.unpack("H", fcntl.ioctl(s.fileno(), 0x8913, struct.pack("256s", name.encode()[:15]))[16:18])[0]
+        if flags & 1:
+            up.append(name)
+    return up
+
+attempt("net.netlink", "network", "enumerate network interfaces that are UP (other than lo)", usable_interfaces, "socket", "seccomp|netns")
 attempt("net.docker_socket", "network", "connect to /var/run/docker.sock", lambda: (lambda s: (s.connect("/var/run/docker.sock"), True)[1])(socket.socket(socket.AF_UNIX)), None, "mount-ns")
 attempt("net.abstract_unix", "network", "connect to host abstract unix socket", lambda: (lambda s: (s.connect("\0/tmp/.X11-unix/X0"), True)[1])(socket.socket(socket.AF_UNIX)), None, "net-ns")
 

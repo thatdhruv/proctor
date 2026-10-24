@@ -1,15 +1,21 @@
 # Phase plan
 
-| Phase | Deliverable | Exit criteria |
-|---|---|---|
-| 0 | Repo, architecture, plan, CI skeleton | Docs merged; `make test` wired |
-| 1 | C++ sandbox: namespaces, rootfs, rlimits/cgroup, seccomp + user-notif logging | Sandbox runs `echo`; network & mount attempts denied and logged |
-| 2 | `proctord` daemon: warm pool, snapshot/restore, JSON protocol; Python client | Cold vs warm latency benchmark runs |
-| 3 | Environment API + 3 envs (coding, SQL/Postgres, FS-ops), host-side verifiers | `reset/step` pass tests with reference solutions |
-| 4 | Postgres schema + recorder; OTel tracing + metrics | Episodes persisted; spans visible |
-| 5 | Hardening loop: attacker, oracle, fixer, rounds | Cheating rate by exploit type, before/after |
-| 6 | Containment red-team suite | Blocked attempts logged, 0 successes |
-| 7 | Go operator + CRD + NetworkPolicy + quotas + autoscale | `go test` green; manifests validate |
-| 8 | Observability stack (compose + Grafana dashboards) | Dashboards populated by real run |
-| 9 | envharness adapter (credited, optional) | Adapter test passes |
-| 10 | Evidence, diagrams, screenshots, README | Every number reproducible via `scripts/` |
+| Phase | Deliverable | Exit criteria | Status |
+|---|---|---|---|
+| 0 | Repo, architecture, plan, CI | docs merged; `make test` wired | done |
+| 1 | C++ sandbox: namespaces, rootfs, rlimits/cgroup, seccomp + user-notif logging | `echo` runs; network and mount attempts denied and logged | done (15 integration checks) |
+| 2 | `proctord`: warm pool, snapshot/restore, JSON protocol, Python client | cold vs warm benchmark runs | done: warm lease 0.18 ms vs cold 3.3 ms |
+| 3 | Environment API + 3 envs (coding, SQL/Postgres, FS-ops) with host-side verifiers and oracles | honest solutions rewarded, stub gets 0 | done |
+| 4 | Postgres episode store; OTel tracing + metrics | episodes persisted, spans visible | done |
+| 5 | Hardening loop: attacker, oracle, fixer, rounds | cheating rate by exploit type before/after | done: 79% to 0% over 4 rounds (scripted adversary) |
+| 6 | Containment red team | blocked attempts logged, 0 successes | done: 50/50 blocked, 29/29 logged |
+| 7 | Go operator: CRD, sharding, autoscaling, quotas, NetworkPolicy | `go test` green; e2e on a real cluster | done (kind + Calico); fail-closed self-test added after finding that kindnet ignores policies |
+| 8 | Observability stack | dashboards populated by a real run | done |
+| 9 | envharness adapter (credited, optional) | adapter test passes against EnvHarness's own `Setup` layer | done |
+| 10 | Evidence, diagrams, screenshots, README | every number reproducible | done |
+
+## Next
+* Run the LLM attacker and fixer against a live model and publish its cheating curve next to the scripted one.
+* Let the fixer emit real code diffs, validated by regression (honest solutions) and exploit replay.
+* Per-sandbox egress via a policy-enforcing proxy for tasks that legitimately need package installs.
+* aarch64 build and test; gVisor/Kata `RuntimeClass` runs of the containment battery.

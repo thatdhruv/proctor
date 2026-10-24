@@ -1,0 +1,46 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  core:
+    name: C++ core (sandbox, seccomp, pool)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends g++ make
+      - run: make -C core -j"$(nproc)"
+      - name: integration tests (namespaces, seccomp, limits)
+        run: python3 core/tests/run_tests.py core/build
+
+  python:
+    name: Python envs, hardening loop, store
+    runs-on: ubuntu-22.04
+    needs: core
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_USER: proctor, POSTGRES_PASSWORD: proctor, POSTGRES_DB: proctor }
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U proctor" --health-interval 3s --health-retries 20
+    env:
+      PROCTOR_CORE_BUILD: ${{ github.workspace }}/core/build
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends g++ make
+      - run: make -C core -j"$(nproc)"
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e "python[dev]"
+      - run: pytest -q python/tests
+
+  operator:
+    name: Go operator
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: "1.23", cache-dependency-path: operator/go.sum }
+      - run: make -C operator test
