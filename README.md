@@ -1,5 +1,7 @@
 # Proctor
 
+[![ci](https://github.com/thatdhruv/proctor/actions/workflows/ci.yml/badge.svg)](https://github.com/thatdhruv/proctor/actions/workflows/ci.yml)
+
 **Contained RL environments whose verifiers are red-teamed, patched, and re-attacked.**
 
 Proctor turns ordinary tasks (fix this function, answer this SQL question, tidy this file tree) into sandboxed,
@@ -495,7 +497,8 @@ Reproduce the evidence: `make evidence report` (needs Docker for Postgres), `pro
 * **Numbers are from one desktop**, with other services (Docker, Grafana) running. Treat them as orders of magnitude
   and rerun on your hardware (`proctor bench`).
 * Linux x86-64 is tested; the seccomp filter has aarch64 constants but was not run there.
-* The GitHub Actions workflow is provided; see the repository's Actions tab for its current status.
+* CI (C++ core, Python suite with a Postgres service, Go operator) runs on GitHub-hosted Ubuntu 22.04 runners; the
+  Kubernetes e2e is a manual script, not part of CI.
 
 ## Repo layout
 
